@@ -1,59 +1,167 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+📌 Author
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Aswathy Anilkumar
 
-## About Laravel
+# Laravel Bulk Import & Chunked Image Upload
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+This project implements **Task A** of the Laravel assessment, focusing on **scalable CSV bulk import** and **resumable chunked image uploads** using Laravel APIs.  
+The solution is designed with **performance, reliability, and testability** in mind.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+---
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## 🚀 Features
 
-## Learning Laravel
+### 1. CSV Bulk Product Import
+- Upload large CSV files via API
+- Chunked processing to handle large datasets efficiently
+- Product **upsert by SKU** (no duplicates)
+- Graceful validation & error handling
+- Unit-tested business logic
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+### 2. Chunked Image Upload (Resumable)
+- Upload images in multiple chunks
+- Supports resume & retry of failed chunks
+- Automatically merges chunks after final upload
+- Handles missing chunks gracefully (no application crash)
+- Returns meaningful API error responses
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
 
-## Laravel Sponsors
+## 🧱 Tech Stack
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+- **Laravel 12**
+- **PHP 8.3**
+- SQLite (for simplicity & portability)
+- PHPUnit (Unit & Feature tests)
 
-### Premium Partners
+---
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+## 📂 Folder Structure (Key Parts)
+```bash
+app/
+├── Http/Controllers
+│ ├── ProductImportController.php
+│ └── ChunkedImageUploadController.php
+├── Services
+│ └── ProductCsvImportService.php
 
-## Contributing
+tests/
+├── Unit
+│ └── ProductUpsertTest.php
+└── Feature
+└── ChunkedImageUploadTest.php
+```
+## 📦 Setup Instructions
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### 1️⃣ Clone Repository
+```bash
+git clone <your-repo-url>
+cd laravel-bulk-import
+```
+2️⃣ Install Dependencies
+```bash
+composer install
+```
+3️⃣ Environment Setup
+```bash
+cp .env.example .env
+php artisan key:generate
+```
+4️⃣ Database Setup
 
-## Code of Conduct
+SQLite is used for ease of setup.
+```bash
+touch database/database.sqlite
+php artisan migrate
+```
+5️⃣ Start Server
+```bash
+php artisan serve
+```
+📄 Task A – Bulk CSV Import
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+🔹 API Endpoint
 
-## Security Vulnerabilities
+     POST /api/import-products
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+🔹 Description
+- Imports products from a CSV file
+    
+- Handles duplicates using SKU-based upsert logic
+    
+- Validates input data
 
-## License
+- Idempotent (safe to re-upload the same CSV)
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+🔹 Demo UI
+
+    GET /upload
+
+
+A simple web interface is provided for uploading CSV files for testing and demo purposes.
+
+🖼 Task A – Chunked Image Upload
+
+🔹 API Endpoint
+    
+    POST /api/upload-image-chunk
+
+🔹 Description
+
+- Supports uploading large images in chunks
+
+- Chunks are stored temporarily on the server
+
+- Final image is assembled when all chunks are received
+
+- Missing chunks are handled gracefully with a structured error response
+
+- Supports resumable uploads (only missing chunks need to be retried)
+
+🔹 Demo UI
+
+    GET /test-image-upload
+
+
+A lightweight web UI is provided to manually test chunk uploads and observe validation and error handling.
+
+❗ Error Handling (Chunk Upload)
+
+If a chunk is missing during merge, the API returns:
+
+    {
+      "message": "Upload incomplete",
+      "error": "Missing chunk 0. Please retry uploading the missing chunk.",
+      "missing_chunk": 0
+    }
+
+
+HTTP Status: 422 Unprocessable Entity
+
+This ensures the application does not fail and allows the client to retry only the missing chunks.
+
+🧪 Testing
+
+🔹 Run Tests
+    
+    php artisan test
+
+🔹 Covered Scenarios
+
+- Product CSV upsert logic
+
+- Successful chunked image upload & merge
+
+- Graceful handling of missing chunks
+
+Tests are written to be CI-friendly and do not rely on environment-specific extensions (e.g., GD).
+
+🧠 Design Notes
+
+- API-first design with optional minimal web UI for testing
+
+- Chunk uploads accept raw binary data (final file validation only)
+
+- SQLite chosen for simplicity and automated testing
+
+- Clean separation of concerns and readable commit history
