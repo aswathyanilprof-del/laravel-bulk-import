@@ -55,7 +55,7 @@ tests/
 
 ### 1️⃣ Clone Repository
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/aswathyanilprof-del/laravel-bulk-import.git
 cd laravel-bulk-import
 ```
 2️⃣ Install Dependencies
